@@ -86,12 +86,12 @@ dev-deps: .deps
 	@sudo apt install pip
 	@touch .dev-deps
 
-.PHONY: r2d2 r2d2-setup r2d2-pull
+.PHONY: r2d2 r2d2-setup
 .r2d2:
 	$(MAKE) --no-print-directory r2d2
 
 #: Setup R2D2 Containers and Harbor
-r2d2: r2d2-setup r2d2-pull
+r2d2: r2d2-setup
 	@touch .r2d2
 
 #: Setup R2D2 Harbor
@@ -103,9 +103,8 @@ r2d2-setup:
 	@bash -c  'read -sp "R2D2 Access Token: " TOKEN && echo "" && sudo docker login -u $$TOKEN -p $$TOKEN registry.levelup.cce.af.mil'
 	@sudo docker login registry.levelup.cce.af.mil
 
-#: Setup R2D2 Containers
-r2d2-pull:
-	@sudo docker pull registry.levelup.cce.af.mil/cpb/csd-d/cerebro/alpine:3.18
+deploy:
+	@helm install kubedemo helm -n kubedemo --create-namespace
 
 .PHONY: clean
 #: Cleans slate for docker images
