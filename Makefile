@@ -28,9 +28,9 @@ build: rebuild run
 web:
 	$(MAKE) --no-print-directory -C web web
 
-.PHONY: web
+.PHONY: api
 #: Builds and runs api
-web:
+api:
 	$(MAKE) --no-print-directory -C api api
 
 .PHONY: pub-r2d2
@@ -85,6 +85,27 @@ dev-deps: .deps
 	@sudo apt install golang-1.22 postgresql-client-14
 	@sudo apt install pip
 	@touch .dev-deps
+
+.PHONY: r2d2 r2d2-setup r2d2-pull
+.r2d2:
+	$(MAKE) --no-print-directory r2d2
+
+#: Setup R2D2 Containers and Harbor
+r2d2: r2d2-setup r2d2-pull
+	@touch .r2d2
+
+#: Setup R2D2 Harbor
+r2d2-setup:
+	@sudo cp /etc/docker/daemon.json /etc/docker/daemon.json.backup || true;
+	@sudo bash -c  'printf "{\n\t\"insecure-registries\" : [\"registry.levelup.cce.af.mil\"]\n}\n" > /etc/docker/daemon.json'
+	@sudo systemctl restart docker
+	@echo "Logging into R2D2 Registry:"
+	@bash -c  'read -sp "R2D2 Access Token: " TOKEN && echo "" && sudo docker login -u $$TOKEN -p $$TOKEN registry.levelup.cce.af.mil'
+	@sudo docker login registry.levelup.cce.af.mil
+
+#: Setup R2D2 Containers
+r2d2-pull:
+	@sudo docker pull registry.levelup.cce.af.mil/cpb/csd-d/cerebro/alpine:3.18
 
 .PHONY: clean
 #: Cleans slate for docker images

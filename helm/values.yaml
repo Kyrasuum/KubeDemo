@@ -11,7 +11,8 @@ global:
 
   airgapped: false
   image:
-    repository: harbor.defenders.dev/cerebro/
+    repository: registry.levelup.cce.af.mil/plorentz/kubedemo/
+    # repository: harbor.defenders.dev/kubedemo/
     # repository: ltac.dev.local:5000/
     pullPolicy: IfNotPresent
 
