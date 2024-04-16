@@ -1,0 +1,17 @@
+@import './quasar.scss';
+@import './tailwind';
+
+*,
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+*:focus {
+    outline: none;
+}
+
+body {
+    text-align: center;
+}

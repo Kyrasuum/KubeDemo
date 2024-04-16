@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  rtr:
+    env_file:
+      - .env
+    restart: always
+    build:
+      context: ./ingress
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
+
+  api:
+    env_file:
+      - .env
+    restart: always
+    build:
+      context: ./api
+      dockerfile: ./docker/Dockerfile
+
+  web:
+    env_file:
+      - .env
+    restart: always
+    build:
+      context: ./web
+      dockerfile: ./docker/Dockerfile
