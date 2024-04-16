@@ -1,15 +1,12 @@
 package internal
 
 import (
-	"embed"
 	"fmt"
+	"io/ioutil"
 	"mime"
 	"net/http"
 	"path/filepath"
 )
-
-//go:embed data
-var data embed.FS
 
 // http data request handler
 func GetData(w http.ResponseWriter, r *http.Request, args ...interface{}) {
@@ -18,7 +15,7 @@ func GetData(w http.ResponseWriter, r *http.Request, args ...interface{}) {
 	path = "data" + path
 
 	//get page content
-	p, err := data.ReadFile(path)
+	p, err := ioutil.ReadFile(path)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)

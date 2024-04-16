@@ -1,5 +1,8 @@
 version: "3.8"
 
+volumes:
+  api-pvc:
+
 services:
   rtr:
     env_file:
@@ -15,6 +18,8 @@ services:
     env_file:
       - .env
     restart: always
+    volumes:
+      - api-pvc:/app/data
     build:
       context: ./api
       dockerfile: ./docker/Dockerfile

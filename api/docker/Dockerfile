@@ -24,6 +24,7 @@ RUN go build -o api cmd/main.go
 FROM ${IMAGE_NAME}:${TAG} AS production-stage
 WORKDIR /app
 COPY --from=build-stage /app/api /app/
+COPY internal/data /app/data
 RUN adduser -D golanguser &&\
     chown -R golanguser /app
 USER golanguser

@@ -1,0 +1,89 @@
+# Default values for cerebro.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  replicaCount: 1
+
+  # imagePullSecrets needed for private repo should
+  useImageSecrets: true
+  imagePullSecrets:
+  - name: regcred
+
+  airgapped: false
+  image:
+    repository: harbor.defenders.dev/cerebro/
+    # repository: ltac.dev.local:5000/
+    pullPolicy: IfNotPresent
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # resources to set if required by installation infrastructure
+  # recommended to not set these values unless it is needed
+  resources: {}
+    # limits:
+    #   cpu: 120m
+    #   memory: 500Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+rtr:
+  image:
+    repository: kubedemo-rtr
+    tag: "latest"
+  service:
+    port: 80
+
+  ingress:
+    enabled: false
+    className: "nginx"
+    hosts:
+      - host: "*"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+
+web:
+  image:
+    repository: kubedemo-web
+    tag: "latest"
+  service:
+    port: 8080
+
+api:
+  image:
+    repository: kubedemo-api
+    tag: "latest"
+  service:
+    port: 8081
+  persistence:
+    enabled: false
+    storageClass: "openebs-hostpath"
+
+
+# environment the environment variables for the deployments
+environment:
+  API_HOST: "kubedemo-api.kubedemo.svc.cluster.local"
+
+imageCredentials:
+  username: "robot"
+  password: ""
+  registry: "registry.levelup.cce.af.mil"
