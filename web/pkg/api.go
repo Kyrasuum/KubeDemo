@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	api_host = condAssignStrEnv("API_HOST", "http://127.0.0.1:8081")
+	api_host = condAssignStrEnv("API_HOST", "127.0.0.1")
 )
 
 func condAssignStrEnv(env string, def string) string {
@@ -41,7 +41,7 @@ func validInt(variable string, name string, def int) int {
 }
 
 func GetData(path string) ([]byte, error) {
-	resp, err := http.Get(api_host + path)
+	resp, err := http.Get("http://" + api_host + ":8081" + path)
 	if err != nil {
 		return nil, err
 	}
