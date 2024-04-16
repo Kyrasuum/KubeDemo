@@ -14,7 +14,7 @@ restart: stop run
 
 .PHONY: rebuild
 #: Creates a fresh build of the project
-rebuild: .deps stop
+rebuild: .dev-deps .deps stop
 	@docker compose build rtr
 	@docker compose build web
 	@docker compose build api
@@ -32,6 +32,24 @@ web:
 #: Builds and runs api
 web:
 	$(MAKE) --no-print-directory -C api api
+
+.PHONY: pub-r2d2
+#: Publish images to r2d2
+pub-r2d2: .r2d2
+	@branch=`git rev-parse --abbrev-ref HEAD`; \
+	images=`docker images | cut -d" " -f1 | grep -G "^kubedemo-" | cut -d"-" -f2`; \
+	repos=`echo $$images | tr " " "\n" | xargs -I{} sh -c 'echo kubedemo-$$1:latest~registry.levelup.cce.af.mil/plorentz/kubedemo/$$1:$$2' -- {} $$branch`; \
+	echo $$repos | tr " " "\n" | awk -F'~' '{ system("docker tag " $$1 " " $$2) }'; \
+	echo $$repos | tr " " "\n" | awk -F'~' '{ system("docker push " $$2) }';
+
+.PHONY: pub-genosha
+#: Publish images to genosha
+pub-genosha:
+	@branch=`git rev-parse --abbrev-ref HEAD`; \
+	images=`docker images | cut -d" " -f1 | grep -G "^kubedemo-" | cut -d"-" -f2`; \
+	repos=`echo $$images | tr " " "\n" | xargs -I{} sh -c 'echo kubedemo-$$1:latest~harbor.defenders.dev/kubedemo/$$1:$$2' -- {} $$branch`; \
+	echo $$repos | tr " " "\n" | awk -F'~' '{ system("docker tag " $$1 " " $$2) }'; \
+	echo $$repos | tr " " "\n" | awk -F'~' '{ system("docker push " $$2) }';
 
 .PHONY: logs
 #: Extracts and saves logs locally from running cerebro containers
@@ -64,7 +82,6 @@ dev-deps: .deps
 		&& nvm install v18.6.0 && nvm use v18.6.0 \
 		&& nvm install-latest-npm \
 		&& cd web/internal/pages && npm run clean && npm clean-install
-	@sudo apt-add-repository --update ppa:longsleep/golang-backports
 	@sudo apt install golang-1.22 postgresql-client-14
 	@sudo apt install pip
 	@touch .dev-deps
