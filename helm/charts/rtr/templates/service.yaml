@@ -4,7 +4,13 @@ metadata:
   name: {{ include "rtr.fullname" . }}
   labels:
     access: internal
+    app: {{ .Chart.Name }}
+    bdp/proxy: external
     {{- include "rtr.labels" . | nindent 4 }}
+  annotations:
+    bdp/proxy: external
+    bdp/proxy-redirect: {{ .Values.global.path }}/
+    bdp/proxy-context: {{ .Values.global.path }}
 spec:
   type: {{ .Values.service.type }}
   ports:

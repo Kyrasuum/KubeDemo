@@ -4,6 +4,7 @@ metadata:
   name: {{ include "rtr.fullname" . }}
   labels:
     access: internal
+    app: {{ .Chart.Name }}
     {{- include "rtr.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.global.autoscaling.enabled }}
@@ -11,6 +12,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
+      app: {{ .Chart.Name }}
       {{- include "rtr.selectorLabels" . | nindent 6 }}
   template:
     metadata:
@@ -20,6 +22,7 @@ spec:
       {{- end }}
       labels:
         access: internal
+        app: {{ .Chart.Name }}
         {{- include "rtr.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.global.useImageSecrets }}
@@ -37,6 +40,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.global.image.repository }}{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          volumeMounts:
+            #- mountPath: /etc/pki/application
+            #  name: application-pki-volume
+            - mountPath: /etc/nginx/nginx.conf
+              name: {{ .Chart.Name }}-nginx-config
+              subPath: https.conf
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -46,6 +55,13 @@ spec:
               name: kubedemo
           resources:
             {{- toYaml .Values.global.resources | nindent 12 }}
+      volumes:
+        #- name: application-pki-volume
+        #  secret:
+        #    secretName: "k8s-cerebro-ltac-ssl"
+        - name: {{ .Chart.Name }}-nginx-config
+          configMap:
+            name: {{ .Chart.Name }}-nginx-config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

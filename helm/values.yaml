@@ -53,14 +53,14 @@ rtr:
     port: 8080
 
   ingress:
-    enabled: false
+    enabled: true
     className: "nginx"
     hosts:
-      - host: "*"
+      - host: "apps-dev.hunters.army.mil"
+        secretName: "kubedemo-ssl"
         paths:
-          - path: /
+          - path: "/"
             pathType: ImplementationSpecific
-    tls: []
 
 web:
   image:
