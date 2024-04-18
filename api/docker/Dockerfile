@@ -28,5 +28,5 @@ COPY internal/data /app/data
 RUN adduser -D golanguser &&\
     chown -R golanguser /app
 USER golanguser
-EXPOSE 8081
+EXPOSE 8082
 CMD ["/app/api"]

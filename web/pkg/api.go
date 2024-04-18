@@ -41,7 +41,7 @@ func validInt(variable string, name string, def int) int {
 }
 
 func GetData(path string) ([]byte, error) {
-	resp, err := http.Get("http://" + api_host + ":8081" + path)
+	resp, err := http.Get("http://" + api_host + ":8082" + path)
 	if err != nil {
 		return nil, err
 	}

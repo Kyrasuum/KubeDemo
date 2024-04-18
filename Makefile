@@ -51,6 +51,11 @@ pub-genosha:
 	echo $$repos | tr " " "\n" | awk -F'~' '{ system("docker tag " $$1 " " $$2) }'; \
 	echo $$repos | tr " " "\n" | awk -F'~' '{ system("docker push " $$2) }';
 
+.PHONY: deploy
+#: Deploy helm chart to kubernetes cluster
+deploy:
+	@helm install kubedemo helm -n kubedemo --create-namespace
+
 .PHONY: logs
 #: Extracts and saves logs locally from running cerebro containers
 logs:
@@ -102,9 +107,6 @@ r2d2-setup:
 	@echo "Logging into R2D2 Registry:"
 	@bash -c  'read -sp "R2D2 Access Token: " TOKEN && echo "" && sudo docker login -u $$TOKEN -p $$TOKEN registry.levelup.cce.af.mil'
 	@sudo docker login registry.levelup.cce.af.mil
-
-deploy:
-	@helm install kubedemo helm -n kubedemo --create-namespace
 
 .PHONY: clean
 #: Cleans slate for docker images

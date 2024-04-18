@@ -33,5 +33,5 @@ COPY --from=build-stage /app/web /app/
 RUN adduser -D golanguser &&\
     chown -R golanguser /app
 USER golanguser
-EXPOSE 8080
+EXPOSE 8081
 CMD ["/app/web"]

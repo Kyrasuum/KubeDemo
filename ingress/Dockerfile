@@ -14,6 +14,6 @@ COPY ./startup.sh /etc/nginx/startup.sh
 COPY ./nginx.conf /etc/nginx/nginx.conf.template
 RUN chown -R nginx:www /etc/nginx
 
-EXPOSE 80
+EXPOSE 8080
 USER nginx
 CMD ["/etc/nginx/startup.sh"]

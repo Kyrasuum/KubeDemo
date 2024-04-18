@@ -20,8 +20,8 @@ func Host() error {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		wrapper(w, r, getPage)
 	})
-	fmt.Printf("server started on port: 8080\n")
-	err := http.ListenAndServe(":8080", nil)
+	fmt.Printf("server started on port: 8081\n")
+	err := http.ListenAndServe(":8081", nil)
 	if errors.Is(err, http.ErrServerClosed) {
 		fmt.Printf("server closed\n")
 	} else if err != nil {

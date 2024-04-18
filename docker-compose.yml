@@ -12,7 +12,7 @@ services:
       context: ./ingress
       dockerfile: ./Dockerfile
     ports:
-      - "80:80"
+      - "8080:8080"
 
   api:
     env_file:
